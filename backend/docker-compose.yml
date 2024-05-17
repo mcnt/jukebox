@@ -1,0 +1,32 @@
+version: "3.6"
+
+networks:
+    jukebox:
+        driver: bridge
+
+services:
+    #
+    db:
+        container_name: jukebox_db
+        image: postgres
+        networks:
+            - jukebox
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_PASSWORD=jukebox
+            - POSTGRES_USER=jukebox
+            - POSTGRES_DB=jukebox
+
+    #
+    api:
+        container_name: jukebox_api
+        build: .
+        networks:
+            - jukebox
+        volumes:
+            - .:/var/www/html/
+        ports:
+            - 80:80
+        depends_on:
+            - db
